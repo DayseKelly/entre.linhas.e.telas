@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Avaliações | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div><span class="page-eyebrow">Comunidade</span><h1>Avaliações</h1><p class="page-description">Impressões de leitores sobre as obras do acervo.</p></div>
+    <a class="btn btn-primary" href="{% url 'criar_avaliacao' %}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nova avaliação</a>
+</header>
+<div class="surface-panel table-responsive">
+    <table class="table table-hover">
+        <thead><tr><th>Obra</th><th>Leitor</th><th>Nota</th><th class="text-end">Ações</th></tr></thead>
+        <tbody>
+        {% for avaliacao in avaliacoes %}
+            <tr>
+                <td><a class="fw-semibold text-decoration-none" href="{% url 'detalhe_avaliacao' avaliacao.id %}">{{ avaliacao.obra.titulo }}</a></td>
+                <td>{{ avaliacao.usuario.username }}</td>
+                <td><span class="badge text-bg-warning">{{ avaliacao.nota }} / 10</span></td>
+                <td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'editar_avaliacao' avaliacao.id %}">Editar</a> <a class="btn btn-sm btn-outline-danger" href="{% url 'excluir_avaliacao' avaliacao.id %}">Excluir</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="py-5 text-center text-secondary">Nenhuma avaliação cadastrada.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

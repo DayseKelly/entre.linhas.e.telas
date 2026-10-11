@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Remover da biblioteca | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading"><div><span class="page-eyebrow">Confirmação</span><h1>Remover da biblioteca</h1></div></header>
+<section class="surface-panel p-4 p-md-5">
+    <div class="d-flex gap-3 align-items-start">
+        <i class="bi bi-exclamation-triangle text-danger fs-3" aria-hidden="true"></i>
+        <div><h2 class="h5">Remover este vínculo?</h2><p class="text-secondary"><strong>{{ registro.obra.titulo }}</strong> deixará de constar na biblioteca de {{ registro.usuario.username }}.</p></div>
+    </div>
+    <form method="post" class="d-flex flex-wrap gap-2 mt-4">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Remover vínculo</button>
+        <a class="btn btn-outline-secondary" href="{% url 'detalhe_usuario_obra' registro.id %}">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

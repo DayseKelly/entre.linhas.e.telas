@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Minha área | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div><span class="page-eyebrow">Espaço pessoal</span><h1>Olá, {{ user.username }}</h1><p class="page-description">Seu acervo salvo e suas conversas sobre os repertórios.</p></div>
+    <a class="btn btn-outline-secondary" href="{% url 'listar_obras' %}"><i class="bi bi-search me-1" aria-hidden="true"></i>Explorar repertórios</a>
+
+    </header>
+{% include "_area_tabs.html" %}
+<div class="row g-3">
+    <div class="col-md-6">
+        <a class="personal-feature" href="{% url 'meus_favoritos' %}">
+            <span class="personal-feature-icon"><i class="bi bi-bookmark-heart" aria-hidden="true"></i></span>
+            <span class="personal-feature-copy"><strong>Meus favoritos</strong><span>Repertórios que você guardou para usar depois.</span></span>
+            <span class="personal-feature-count">{{ favoritos_total }}</span>
+        </a>
+        
+    </div>
+    <div class="col-md-6">
+        <a class="personal-feature" href="{% url 'minhas_avaliacoes' %}">
+            <span class="personal-feature-icon"><i class="bi bi-chat-left-text" aria-hidden="true"></i></span>
+            <span class="personal-feature-copy"><strong>Meus comentários</strong><span>Suas avaliações e conversas sobre as obras.</span></span>
+            <span class="personal-feature-count">{{ comentarios_total }}</span>
+        </a>
+    </div>
+</div>
+<section class="surface-panel p-4 mt-4">
+    <span class="page-eyebrow">Conta</span>
+    <h2 class="h5 mb-1">{{ user.username }}</h2>
+    <p class="text-secondary mb-0">{{ user.email|default:"Conta de leitor" }}</p>
+</section>
+{% endblock %}

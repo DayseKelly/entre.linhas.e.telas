@@ -1,0 +1,16 @@
+CAMPI_IF_BAIANO = {
+    'IF BAIANO - CAMPUS ALAGOINHAS': 'Alagoinhas',
+    'IF BAIANO - CAMPUS BOM JESUS DA LAPA': 'Bom Jesus da Lapa',
+    'IF BAIANO - CAMPUS CATU': 'Catu',
+    'IF BAIANO - CAMPUS GOVERNADOR MANGABEIRA': 'Governador Mangabeira',
+    'IF BAIANO - CAMPUS GUANAMBI': 'Guanambi',
+    'IF BAIANO - CAMPUS ITABERABA': 'Itaberaba',
+    'IF BAIANO - CAMPUS ITAPETINGA': 'Itapetinga',
+    'IF BAIANO - CAMPUS SANTA INÊS': 'Santa Inês',
+    'IF BAIANO - CAMPUS SENHOR DO BONFIM': 'Senhor do Bonfim',
+    'IF BAIANO - CAMPUS SERRINHA': 'Serrinha',
+    'IF BAIANO - CAMPUS TEIXEIRA DE FREITAS': 'Teixeira de Freitas',
+    'IF BAIANO - CAMPUS URUÇUCA': 'Uruçuca',
+    'IF BAIANO - CAMPUS VALENÇA': 'Valença',
+    'IF BAIANO - CAMPUS XIQUE-XIQUE': 'Xique-Xique',
+}

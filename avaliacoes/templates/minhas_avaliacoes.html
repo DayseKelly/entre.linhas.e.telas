@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Meus comentários | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div><span class="page-eyebrow">Espaço pessoal</span><h1>Meus comentários</h1><p class="page-description">Avaliações que você publicou nos repertórios.</p></div>
+</header>
+{% include "_area_tabs.html" %}
+<div class="review-list">
+    {% for avaliacao in avaliacoes %}
+        <article class="review-item review-item-own">
+            <div class="review-avatar" aria-hidden="true">{{ avaliacao.obra.titulo|first|upper }}</div>
+            <div class="flex-grow-1">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+                    <div><a class="favorite-title" href="{% url 'detalhe_obra' avaliacao.obra.id %}">{{ avaliacao.obra.titulo }}</a><div class="record-meta">{{ avaliacao.obra.autor }}</div></div>
+                    <span class="badge text-bg-warning">{{ avaliacao.nota|floatformat:1 }} / 10</span>
+                </div>
+                <p class="mb-2 mt-3 text-secondary">{{ avaliacao.comentario|linebreaksbr }}</p>
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'detalhe_obra' avaliacao.obra.id %}#reviews-title"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Ver ou editar comentário</a>
+            </div>
+        </article>
+    {% empty %}
+        <section class="surface-panel empty-state"><i class="bi bi-chat-left-text" aria-hidden="true"></i><h2 class="h5">Você ainda não comentou</h2><p>Suas avaliações aparecerão aqui depois que você comentar um repertório.</p><a class="btn btn-primary" href="{% url 'listar_obras' %}">Encontrar um repertório</a></section>
+    {% endfor %}
+</div>
+{% endblock %}

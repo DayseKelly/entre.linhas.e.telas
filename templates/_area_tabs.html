@@ -1,0 +1,5 @@
+<nav class="area-tabs mb-4" aria-label="Seções da área pessoal">
+    <a class="{% if active_tab == 'inicio' %}active{% endif %}" href="{% url 'minha_area' %}">Visão geral</a>
+    <a class="{% if active_tab == 'favoritos' %}active{% endif %}" href="{% url 'meus_favoritos' %}">Meus favoritos</a>
+    <a class="{% if active_tab == 'comentarios' %}active{% endif %}" href="{% url 'minhas_avaliacoes' %}">Meus comentários</a>
+</nav>

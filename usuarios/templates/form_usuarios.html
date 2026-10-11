@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo_pagina|default:"Cadastrar usuário" }} | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading"><div><span class="page-eyebrow">Comunidade</span><h1>{{ titulo_pagina|default:"Cadastrar usuário" }}</h1></div><a class="btn btn-outline-secondary" href="{% url 'listar_usuarios' %}">Cancelar</a></header>
+<form method="post" class="surface-panel p-4">
+    {% csrf_token %}
+    {% include "_form_fields.html" %}
+    <button class="btn btn-primary" type="submit">Salvar usuário</button>
+</form>
+{% endblock %}

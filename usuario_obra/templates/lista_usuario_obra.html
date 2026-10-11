@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Minha biblioteca | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div><span class="page-eyebrow">Acervo pessoal</span><h1>Biblioteca dos leitores</h1><p class="page-description">Relações entre leitores, favoritos e leituras concluídas.</p></div>
+    <a class="btn btn-primary" href="{% url 'criar_usuario_obra' %}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Adicionar relação</a>
+</header>
+<div class="surface-panel table-responsive">
+    <table class="table table-hover">
+        <thead><tr><th>Leitor</th><th>Obra</th><th>Favorito</th><th>Lido</th><th class="text-end">Ações</th></tr></thead>
+        <tbody>
+        {% for usuario_obra in usuario_obras %}
+            <tr>
+                <td>{{ usuario_obra.usuario.username }}</td>
+                <td><a class="fw-semibold text-decoration-none" href="{% url 'detalhe_usuario_obra' usuario_obra.id %}">{{ usuario_obra.obra.titulo }}</a></td>
+                <td>{% if usuario_obra.favorito %}<span class="badge text-bg-success">Sim</span>{% else %}<span class="text-secondary">Não</span>{% endif %}</td>
+                <td>{% if usuario_obra.lido %}<span class="badge text-bg-success">Sim</span>{% else %}<span class="text-secondary">Não</span>{% endif %}</td>
+                <td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-secondary" href="{% url 'editar_usuario_obra' usuario_obra.id %}">Editar</a> <a class="btn btn-sm btn-outline-danger" href="{% url 'excluir_usuario_obra' usuario_obra.id %}">Excluir</a></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="py-5 text-center text-secondary">Nenhuma relação cadastrada.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Relação usuário-obra | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+	<div>
+		<span class="badge text-bg-light">Detalhes da relação</span>
+		<h1 class="h2 mt-2 mb-0">{{ registro.usuario.username }} · {{ registro.obra.titulo }}</h1>
+	</div>
+	<a class="btn btn-outline-secondary" href="{% url 'listar_usuario_obras' %}">Voltar à lista</a>
+</div>
+
+<section class="card shadow-sm" aria-label="Informações da relação">
+	<div class="card-body p-4">
+		<dl class="row mb-0">
+			<dt class="col-sm-3">Usuário</dt>
+			<dd class="col-sm-9">{{ registro.usuario.username }}</dd>
+			<dt class="col-sm-3">Obra</dt>
+			<dd class="col-sm-9">{{ registro.obra.titulo }}</dd>
+			<dt class="col-sm-3">Favorito</dt>
+			<dd class="col-sm-9"><span class="badge text-bg-{% if registro.favorito %}success{% else %}secondary{% endif %}">{{ registro.favorito|yesno:"Sim,Não" }}</span></dd>
+			<dt class="col-sm-3">Lido</dt>
+			<dd class="col-sm-9"><span class="badge text-bg-{% if registro.lido %}success{% else %}secondary{% endif %}">{{ registro.lido|yesno:"Sim,Não" }}</span></dd>
+		</dl>
+		<div class="d-flex flex-wrap gap-2 mt-4">
+			<a class="btn btn-primary" href="{% url 'editar_usuario_obra' registro.id %}">Editar relação</a>
+			<a class="btn btn-outline-danger" href="{% url 'excluir_usuario_obra' registro.id %}">Excluir relação</a>
+		</div>
+	</div>
+</section>
+{% endblock %}

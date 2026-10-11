@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ obra.titulo }} | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div>
+        <span class="page-eyebrow">Ficha do repertório</span>
+        <h1 class="detail-title">{{ obra.titulo }}</h1>
+        <p class="page-description">{{ obra.autor }}{% if obra.tipo %} · {{ obra.tipo }}{% endif %}</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{% url 'listar_obras' %}"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Voltar ao acervo</a>
+</header>
+
+<section class="surface-panel p-3 p-lg-4">
+    <div class="row g-4 g-lg-5 align-items-start">
+        <div class="col-sm-8 col-md-5 col-lg-4 mx-auto">
+            <div class="cover-frame detail-cover" data-cover-title="{{ obra.titulo }}" data-cover-author="{{ obra.autor }}" data-cover-type="{{ obra.tipo }}">
+            {% if obra.capa %}
+                <img data-cover-image src="{{ obra.capa.url }}" alt="Capa de {{ obra.titulo }}">
+                <div class="cover-art" data-cover-fallback hidden><i class="bi bi-book-half" aria-hidden="true"></i><strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span></div>
+            {% elif obra.capa_url %}
+                <img data-cover-image src="{{ obra.capa_url }}" alt="Capa de {{ obra.titulo }}">
+                <div class="cover-art" data-cover-fallback hidden><i class="bi bi-book-half" aria-hidden="true"></i><strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span></div>
+            {% else %}
+                <div class="cover-art{% if obra.tipo == 'Música' %} cover-art--music{% elif 'Filme' in obra.tipo or obra.tipo == 'Documentário' or obra.tipo == 'Curta-metragem' %} cover-art--film{% endif %}" data-cover-fallback>
+                    <i class="bi {% if obra.tipo == 'Música' %}bi-music-note-beamed{% elif 'Filme' in obra.tipo or obra.tipo == 'Documentário' or obra.tipo == 'Curta-metragem' %}bi-camera-reels{% else %}bi-book-half{% endif %}" aria-hidden="true"></i>
+                    <strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span>
+                </div>
+            {% endif %}
+            </div>
+            <div class="material-links mt-3">
+                {% if obra.link %}<a class="btn btn-primary flex-grow-1" href="{{ obra.link }}" target="_blank" rel="noopener noreferrer">{% if 'Música' in obra.tipo %}<i class="bi bi-youtube me-1" aria-hidden="true"></i>Abrir no YouTube{% elif 'Livro' in obra.tipo %}<i class="bi bi-book me-1" aria-hidden="true"></i>Consultar livro digital{% else %}<i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>Acessar referência{% endif %}</a>{% endif %}
+                {% if obra.pdf_url %}<a class="btn btn-outline-primary" href="{{ obra.pdf_url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i>Abrir PDF oficial</a>{% endif %}
+                {% if obra.arquivo_pdf %}<a class="btn btn-outline-primary" href="{{ obra.arquivo_pdf.url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-download me-1" aria-hidden="true"></i>PDF enviado</a>{% endif %}
+            </div>
+            <form method="post" action="{% url 'alternar_favorito' obra.id %}" class="mt-2">
+                {% csrf_token %}
+                <button class="btn {% if favorito %}btn-primary{% else %}btn-outline-primary{% endif %} w-100" type="submit">
+                    <i class="bi bi-bookmark-heart me-1" aria-hidden="true"></i>
+                    {% if favorito %}Remover dos favoritos{% else %}Adicionar aos favoritos{% endif %}
+                </button>
+            </form>
+        </div>
+
+        <div class="col-lg">
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                {% if obra.tipo %}<span class="badge text-bg-success">{{ obra.tipo }}</span>{% endif %}
+                <span class="record-meta align-self-center">{{ obra.autor }}</span>
+            </div>
+                {% if obra.temas.exists %}
+                    <h2 class="section-title mt-0">Temas relacionados</h2>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tema in obra.temas.all %}
+                            <a class="badge text-bg-success text-decoration-none" href="{% url 'listar_obras' %}?tema={{ tema.id }}">{{ tema.area }} · {{ tema.nome }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            <h2 class="section-title">Anotações de estudo</h2>
+            <div class="text-secondary">{{ obra.resumo|default:"Adicione aqui uma síntese própria sobre como esta referência pode ser usada em uma redação."|linebreaks }}</div>
+            <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
+                {% if perms.obras.change_obra %}
+                <a class="btn btn-outline-secondary" href="{% url 'editar_obra' obra.id %}"><i class="bi bi-pencil me-1" aria-hidden="true"></i>Editar ficha</a>
+                {% endif %}
+                {% if perms.obras.delete_obra %}
+                <a class="btn btn-outline-danger" href="{% url 'excluir_obra' obra.id %}"><i class="bi bi-trash me-1" aria-hidden="true"></i>Excluir</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="review-section mt-4" aria-labelledby="reviews-title">
+    <header class="page-heading mb-3">
+        <div>
+            <span class="page-eyebrow">Troca de leituras</span>
+            <h2 id="reviews-title" class="h2 mb-0">Avaliações e comentários</h2>
+            {% if media_avaliacoes != None %}<p class="page-description">Média da comunidade: <strong>{{ media_avaliacoes|floatformat:1 }} / 10</strong></p>{% endif %}
+        </div>
+    </header>
+    <div class="row g-3 align-items-start">
+        <div class="col-lg-5">
+            <form method="post" class="surface-panel p-4">
+                {% csrf_token %}
+                <h3 class="h5 mb-3">{% if minha_avaliacao %}Atualize sua avaliação{% else %}Deixe sua avaliação{% endif %}</h3>
+                {% include "_form_fields.html" with form=avaliacao_form %}
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-chat-square-text me-1" aria-hidden="true"></i>
+                    {% if minha_avaliacao %}Salvar alterações{% else %}Publicar comentário{% endif %}
+                </button>
+            </form>
+        </div>
+        <div class="col-lg-7">
+            <div class="review-list">
+                {% for avaliacao in avaliacoes %}
+                    <article class="review-item">
+                        <div class="review-avatar" aria-hidden="true">{{ avaliacao.usuario.username|first|upper }}</div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex flex-wrap justify-content-between gap-2">
+                                <strong>{{ avaliacao.usuario.username }}</strong>
+                                <span class="badge text-bg-warning">{{ avaliacao.nota|floatformat:1 }} / 10</span>
+                            </div>
+                            <p class="mb-0 mt-2 text-secondary">{{ avaliacao.comentario|linebreaksbr }}</p>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="surface-panel p-4 text-center text-secondary">Ainda não há comentários para este repertório. Seja a primeira pessoa a avaliar.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes da avaliação | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+	<div>
+		<span class="badge text-bg-light">Detalhes da avaliação</span>
+		<h1 class="h2 mt-2 mb-0">{{ avaliacao.obra.titulo }}</h1>
+	</div>
+	<a class="btn btn-outline-secondary" href="{% url 'listar_avaliacoes' %}">Voltar à lista</a>
+</div>
+
+<section class="card shadow-sm" aria-label="Informações da avaliação">
+	<div class="card-body p-4">
+		<dl class="row mb-0">
+			<dt class="col-sm-3">Nota</dt>
+			<dd class="col-sm-9">{{ avaliacao.nota }}</dd>
+			<dt class="col-sm-3">Comentário</dt>
+			<dd class="col-sm-9">{{ avaliacao.comentario|default:"Nenhum comentário informado."|linebreaksbr }}</dd>
+			<dt class="col-sm-3">Usuário</dt>
+			<dd class="col-sm-9">{{ avaliacao.usuario.username }}</dd>
+			<dt class="col-sm-3">Obra</dt>
+			<dd class="col-sm-9">{{ avaliacao.obra.titulo }}</dd>
+		</dl>
+		<div class="d-flex flex-wrap gap-2 mt-4">
+			<a class="btn btn-primary" href="{% url 'editar_avaliacao' avaliacao.id %}">Editar avaliação</a>
+			<a class="btn btn-outline-danger" href="{% url 'excluir_avaliacao' avaliacao.id %}">Excluir avaliação</a>
+		</div>
+	</div>
+</section>
+{% endblock %}

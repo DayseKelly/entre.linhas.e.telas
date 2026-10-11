@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Meus favoritos | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div><span class="page-eyebrow">Espaço pessoal</span><h1>Meus favoritos</h1><p class="page-description">Repertórios que você guardou para consultar depois.</p></div>
+    <a class="btn btn-outline-secondary" href="{% url 'listar_obras' %}">Explorar acervo</a>
+</header>
+{% include "_area_tabs.html" %}
+<div class="d-grid gap-3">
+    {% for registro in favoritos %}
+        <article class="surface-panel favorite-row">
+            <div class="favorite-cover" data-cover-title="{{ registro.obra.titulo }}" data-cover-author="{{ registro.obra.autor }}" data-cover-type="{{ registro.obra.tipo }}">
+                {% if registro.obra.capa %}<img data-cover-image src="{{ registro.obra.capa.url }}" alt="Capa de {{ registro.obra.titulo }}">
+                {% elif registro.obra.capa_url %}<img data-cover-image src="{{ registro.obra.capa_url }}" alt="Capa de {{ registro.obra.titulo }}" loading="lazy">
+                {% endif %}
+                <div data-cover-fallback {% if registro.obra.capa or registro.obra.capa_url %}hidden{% endif %}><i class="bi bi-book-half" aria-hidden="true"></i></div>
+            </div>
+            <div class="favorite-info">
+                <a class="favorite-title" href="{% url 'detalhe_obra' registro.obra.id %}">{{ registro.obra.titulo }}</a>
+                <span class="record-meta">{{ registro.obra.autor }}{% if registro.obra.tipo %} · {{ registro.obra.tipo }}{% endif %}</span>
+                <div class="d-flex flex-wrap gap-1 mt-2">
+                    {% for tema in registro.obra.temas.all %}<span class="badge text-bg-success">{{ tema.nome }}</span>{% endfor %}
+                </div>
+            </div>
+            <form method="post" action="{% url 'alternar_favorito' registro.obra.id %}">
+                {% csrf_token %}
+                <button class="btn btn-outline-secondary" type="submit" aria-label="Remover {{ registro.obra.titulo }} dos favoritos"><i class="bi bi-bookmark-dash" aria-hidden="true"></i><span class="d-none d-sm-inline ms-1">Remover</span></button>
+            </form>
+        </article>
+    {% empty %}
+        <section class="surface-panel empty-state"><i class="bi bi-bookmark-heart" aria-hidden="true"></i><h2 class="h5">Sua lista está vazia</h2><p>Abra um repertório e marque como favorito para encontrá-lo aqui.</p><a class="btn btn-primary" href="{% url 'listar_obras' %}">Explorar repertórios</a></section>
+    {% endfor %}
+</div>
+{% endblock %}

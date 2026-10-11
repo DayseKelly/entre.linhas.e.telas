@@ -1,0 +1,78 @@
+
+
+{% extends "base.html" %}
+
+{% block title %}Obras | Entre Linhas e Telas{% endblock %}
+
+{% block content %}
+<header class="page-heading">
+    <div>
+        <span class="page-eyebrow">Acervo de redação</span>
+        <h1>Obras e repertórios</h1>
+        <p class="page-description">Filmes, livros, músicas e ideias para construir argumentos.</p>
+    </div>
+    {% if perms.obras.add_obra %}<a class="btn btn-primary" href="{% url 'criar_obra' %}"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Cadastrar repertório</a>{% endif %}
+</header>
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-sm-8 col-lg-6">
+        <label for="tema" class="form-label">Filtrar por tema</label>
+        <select class="form-select" id="tema" name="tema">
+            <option value="">Todos os temas</option>
+            {% regroup temas by area as areas %}
+            {% for grupo in areas %}
+                <optgroup label="{{ grupo.grouper }}">
+                    {% for tema in grupo.list %}
+                        <option value="{{ tema.id }}" {% if tema_selecionado == tema.id|stringformat:"s" %}selected{% endif %}>{{ tema.nome }}</option>
+                    {% endfor %}
+                </optgroup>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary" type="submit">Filtrar</button>
+        {% if tema_selecionado %}<a class="btn btn-link" href="{% url 'listar_obras' %}">Limpar</a>{% endif %}
+    </div>
+</form>
+
+<div class="row g-3">
+    {% for obra in obras %}
+        <div class="col-sm-6 col-xl-4">
+            <article class="card record-card h-100">
+                <div class="cover-frame" data-cover-title="{{ obra.titulo }}" data-cover-author="{{ obra.autor }}" data-cover-type="{{ obra.tipo }}">
+                    {% if obra.capa %}
+                        <img data-cover-image src="{{ obra.capa.url }}" alt="Capa de {{ obra.titulo }}">
+                        <div class="cover-art" data-cover-fallback hidden><i class="bi bi-book-half" aria-hidden="true"></i><strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span></div>
+                    {% elif obra.capa_url %}
+                        <img data-cover-image src="{{ obra.capa_url }}" alt="Capa de {{ obra.titulo }}" loading="lazy">
+                        <div class="cover-art" data-cover-fallback hidden><i class="bi bi-book-half" aria-hidden="true"></i><strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span></div>
+                    {% else %}
+                        <div class="cover-art{% if obra.tipo == 'Música' %} cover-art--music{% elif 'Filme' in obra.tipo or obra.tipo == 'Documentário' or obra.tipo == 'Curta-metragem' %} cover-art--film{% endif %}" data-cover-fallback>
+                            <i class="bi {% if obra.tipo == 'Música' %}bi-music-note-beamed{% elif 'Filme' in obra.tipo or obra.tipo == 'Documentário' or obra.tipo == 'Curta-metragem' %}bi-camera-reels{% else %}bi-book-half{% endif %}" aria-hidden="true"></i>
+                            <strong>{{ obra.titulo }}</strong><span>{{ obra.autor }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h2 class="h5 card-title mb-1">{{ obra.titulo }}</h2>
+                    <p class="record-meta mb-2">{{ obra.autor }}</p>
+                    {% if obra.tipo %}<span class="badge text-bg-light mb-3">{{ obra.tipo }}</span>{% endif %}
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                        {% for tema in obra.temas.all %}
+                            <span class="badge text-bg-success">{{ tema.nome }}</span>
+                        {% endfor %}
+                    </div>
+                          <div class="d-flex flex-wrap gap-2">
+                                <a class="btn btn-sm btn-primary" href="{% url 'detalhe_obra' obra.id %}">Ver repertório</a>
+                                {% if obra.link %}<a class="btn btn-sm btn-outline-secondary" href="{{ obra.link }}" target="_blank" rel="noopener noreferrer" aria-label="Abrir link de {{ obra.titulo }}"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a>{% endif %}
+                          </div>
+                </div>
+            </article>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="surface-panel p-5 text-center"><i class="bi bi-search fs-2 text-secondary" aria-hidden="true"></i><p class="mb-0 mt-2 text-secondary">Nenhum repertório encontrado para este filtro.</p></div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
